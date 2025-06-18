@@ -1,12 +1,16 @@
 import requests
 import os
 from dotenv import load_dotenv
+
+from core.schemas.booking_schema import BOOKING_SCHEMA
 from core.settings.environments import Environment
 import allure
 from core.clients.endpoints import Endpoints
 from core.settings.environments import Environment
 from core.settings.config import Users
 from core.settings.config import Timeouts
+import jsonschema
+
 
 load_dotenv()
 
@@ -68,7 +72,13 @@ class APIClient:
             self.session.headers.update({"Autorization": f"Bearer {token}"})
 
     def get_booking_by_id(self):
-        pass
+        with allure.step("Get booking by ID"):
+            url = f'{self.base_url}{Endpoints.BOOKING_ENDPOINT}/1'
+            response = self.session.get(url)
+            response.raise_for_status()
+        with allure.step("Check status-code and request body"):
+            assert response.status_code == 200, f"Expected status 200 but got{response.status_code}"
+            assert jsonschema.validate(response.json(), BOOKING_SCHEMA), f"The received response body does not match the json schema"
 
 
 
