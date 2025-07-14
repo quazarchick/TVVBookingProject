@@ -25,9 +25,9 @@ class APIClient:
 
         self.base_url = self.get_base_url(environment)
         self.session = requests.Session()
-        self.session.headers = {
+        self.session.headers.update({
             'Content-Type': 'application/json'
-        }
+        })
 
     def get_base_url(self, enviroment: Environment) -> str:
         if enviroment == Environment.TEST:
@@ -84,7 +84,7 @@ class APIClient:
 
     def delete_booking(self, booking_id):
         with allure.step("Delete Booking"):
-            url = f'{self.base_url}/{Endpoints.BOOKING_ENDPOINT.value}/{booking_id}'
+            url = f'{self.base_url}/{Endpoints.BOOKING_ENDPOINT.value}{booking_id}'
             response = self.session.delete(url, auth=HTTPBasicAuth(Users.USERNAME, Users.PASSWORD))
             response.raise_for_status()
         with allure.step("Checking status code"):
@@ -93,7 +93,7 @@ class APIClient:
 
     def create_booking(self, booking_data):
         with allure.step("Create Booking"):
-            url = f'{self.base_url}{Endpoints.BOOKING_ENDPOINT}'
+            url = f'{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}'
             response = self.session.post(url, json=booking_data)
             response.raise_for_status()
         with allure.step("Cheking status code"):
@@ -102,7 +102,7 @@ class APIClient:
 
     def get_booking_ids(self, params=None):
         with allure.step("Getting object with booking"):
-            url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT}"
+            url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}"
             response = self.session.get(url, params=params)
             response.raise_for_status()
         with allure.step("Checking status code"):
@@ -111,7 +111,7 @@ class APIClient:
 
     def update_booking(self, booking_id, booking_data):
         with allure.step("Update Booking"):
-            url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT}/{booking_id}"
+            url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}{booking_id}"
             response = self.session.put(url, booking_data)
             response.raise_for_status()
         with allure.step("Checking status code"):
