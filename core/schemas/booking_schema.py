@@ -1,35 +1,51 @@
 BOOKING_SCHEMA = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "firstname": {
-      "type": "string"
-    },
-    "lastname": {
-      "type": "string"
-    },
-    "totalprice": {
+    "bookingid": {
       "type": "integer"
     },
-    "depositpaid": {
-      "type": "boolean"
-    },
-    "bookingdates": {
+    "booking": {
       "type": "object",
       "properties": {
-        "checkin": {
-          "type": "string",
-          "format": "date"
+        "firstname": {
+          "type": "string"
         },
-        "checkout": {
-          "type": "string",
-          "format": "date"
+        "lastname": {
+          "type": "string"
+        },
+        "totalprice": {
+          "type": "number"
+        },
+        "depositpaid": {
+          "type": "boolean"
+        },
+        "bookingdates": {
+          "type": "object",
+          "properties": {
+            "checkin": {
+              "type": "string",
+              "format": "date"
+            },
+            "checkout": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "required": ["checkin", "checkout"]
+        },
+        "additionalneeds": {
+          "type": "string"
         }
       },
-      "required": ["checkin", "checkout"]
-    },
-    "additionalneeds": {
-      "type": "string"
+      "required": [
+        "firstname",
+        "lastname",
+        "totalprice",
+        "depositpaid",
+        "bookingdates"
+      ]
     }
   },
-  "required": ["firstname", "lastname", "totalprice", "depositpaid", "bookingdates"]
+  "required": ["bookingid", "booking"]
 }
