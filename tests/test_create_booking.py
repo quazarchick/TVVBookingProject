@@ -23,11 +23,11 @@ def test_create_booking_with_custom_data(api_client):
     "additionalneeds" : "Breakfast"
 }
     response = api_client.create_booking(booking_data)
+
     try:
         BookingResponse(**response)
     except ValidationError as e:
         raise ValidationError(f"Response validation failed {e}")
-#Рандомные даты. Используйте фикстуры по генерации дат. И несколько негативных проверок. Сколько
 
     assert response['booking']['firstname'] == booking_data['firstname']
     assert response['booking']['lastname'] == booking_data['lastname']
@@ -55,3 +55,13 @@ def test_create_booking_with_custom_data(api_client, generate_random_booking_dat
     assert response['booking']['bookingdates']['checkin'] == booking_data['bookingdates']['checkin']
     assert response['booking']['bookingdates']['checkout'] == booking_data['bookingdates']['checkout']
     assert response['booking']['additionalneeds'] == booking_data['additionalneeds']
+
+@allure.feature("Test CreateBooking")
+@allure.story("Negative: creating booking with empty body request")
+def test_creating_booking_with_empty_body_request(api_client):
+    booking_data = {}
+
+    with pytest.raises(requests.exceptions.HTTPError) as exc_info:
+        api_client.create_booking(booking_data)
+
+    assert "500" in str(exc_info.value), f'Expected 500 error, got: {exc_info.value}'
